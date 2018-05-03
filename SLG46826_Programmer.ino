@@ -184,7 +184,6 @@ void requestSlaveAddress() {
       continue;
     }
     else {
-      // Serial.print(F("Slave address is: 0x"));
       PrintHex8(slave_address);
       Serial.println();
       return;
@@ -221,10 +220,12 @@ String requestNVMorEeprom() {
 // query 
 ////////////////////////////////////////////////////////////////////////////////
 char query(String queryString) {
-  Serial.println(queryString);
+  Serial.println();
+
+  Serial.print(queryString);
   while (1) {
     if (Serial.available() > 0) {
-      String myString = Serial.readString(); // read the incoming byte:
+      String myString = Serial.readString();
       return myString[0];
     }
   }
@@ -238,17 +239,12 @@ void PrintHex8(uint8_t data) {
     Serial.print("0");
   }
   Serial.print(data, HEX);
-  // Serial.print(" ");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // readChip 
 ////////////////////////////////////////////////////////////////////////////////
 int readChip(String NVMorEEPROM) {
-  // Serial.print(F("Reading chip 0x"));
-  // PrintHex8(slave_address);
-  // Serial.println();
-
   int control_code = slave_address << 3;
 
   if (NVMorEEPROM == "NVM")
@@ -280,14 +276,6 @@ int readChip(String NVMorEEPROM) {
 int eraseChip(String NVMorEEPROM) {
   int control_code = slave_address << 3;
   int addressForAckPolling = control_code;
-
-  // Serial.print(F("Erasing chip 0x"));
-  // PrintHex8(slave_address);
-  // Serial.println();
-
-  // Serial.print(F("Control code: 0x"));
-  // PrintHex8(control_code);
-  // Serial.println();
 
   for (uint8_t i = 0; i < 16; i++) {
     Serial.print(F("Erasing page: 0x"));
@@ -382,9 +370,6 @@ int writeChip(String NVMorEEPROM) {
       strcpy_P(buffer, ptr);
     }
 
-    // Serial.println(buffer);
-
-    // Store each byte into data_array[][] array
     for (size_t j = 0; j < 16; j++)
     {
       String temp = (String)buffer[2 * j] + (String)buffer[(2 * j) + 1];
@@ -418,14 +403,7 @@ int writeChip(String NVMorEEPROM) {
     }
 
     data_array[0xC][0xA] = slave_address;
-    // Serial.print(F("slave_addr: "));
-    // PrintHex8(data_array[0xC][0xA]);
-    // Serial.println();
   }
-
-  // Serial.print(F("Control Code: 0x"));
-  // PrintHex8(control_code);
-  // Serial.println();
 
   // Write each byte of data_array[][] array to the chip
   for (int i = 0; i < 16; i++) {
